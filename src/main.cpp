@@ -72,6 +72,37 @@ void GetSettings() {
   }
 }
 
+void GetAllDevices()
+{
+  http.begin(baseUrl + "app_wireless_mower/device-user/allDevice");
+
+  // Specify content-type header
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept-Language", "de");
+  http.addHeader("Authorization", "Bearer " + accessToken);
+
+  // Send HTTP GET request
+  int httpResponseCode = http.GET();
+  if (httpResponseCode > 0)
+  {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+    String response = http.getString();
+    Serial.println(response);
+    JsonDocument doc;
+    deserializeJson(doc, response);
+    const char *deviceIdChar = doc["data"][0]["deviceId"];
+    deviceId = String(deviceIdChar);
+    const char *deviceSerialNumberChar = doc["data"][0]["deviceSn"];
+    deviceSerialNumber = String(deviceSerialNumberChar);
+  }
+  else
+  {
+    Serial.print("Error code: ");
+    Serial.println(httpResponseCode);
+  }
+}
+
 void setup() {
 
   M5.begin(true, false, true);
@@ -105,6 +136,11 @@ void loop() {
       GetToken();
       Serial.print("Access Token: ");
       Serial.println(accessToken);
+      GetAllDevices();
+      Serial.print("Device ID: ");
+      Serial.println(deviceId);
+      Serial.print("Device Serial Number: ");
+      Serial.println(deviceSerialNumber);
       GetSettings();
     }
     else
