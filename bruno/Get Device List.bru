@@ -1,0 +1,21 @@
+meta {
+  name: Get Device List
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/api/app_wireless_mower/device-user/allDevice
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+  Accept-Language: de
+}
+
+script:post-response {
+  let data = res.body;
+  bru.setEnvVar("deviceId", data.data[0].deviceId);
+}

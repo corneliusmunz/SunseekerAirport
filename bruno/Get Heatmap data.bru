@@ -1,0 +1,20 @@
+meta {
+  name: Get Heatmap data
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/api/wireless_map/wireless_device/getHeatMap?deviceSn={{deviceSerialNumber}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  deviceSn: {{deviceSerialNumber}}
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+  Accept-Language: de
+}

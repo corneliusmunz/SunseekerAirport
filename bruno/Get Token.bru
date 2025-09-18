@@ -1,0 +1,31 @@
+meta {
+  name: Get Token
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/auth/oauth/token
+  body: formUrlEncoded
+  auth: inherit
+}
+
+headers {
+  Accept-Language: de
+  Authorization: Basic YXBwOmFwcA==
+}
+
+body:form-urlencoded {
+  username: {{username}}
+  password: {{password}}
+  grant_type: password
+  scope: server
+}
+
+script:post-response {
+  let data = res.body;
+  bru.setEnvVar("access_token", data.access_token);
+  bru.setEnvVar("user_id", data.user_id);
+  bru.setEnvVar("refresh_token", data.refresh_token);
+  
+}

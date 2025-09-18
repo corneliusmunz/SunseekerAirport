@@ -1,0 +1,28 @@
+meta {
+  name: Set Property
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/iot_mower/wireless/device/set_property
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept-Language: de
+  ~Authorization: Bearer {{access_token}}
+}
+
+body:json {
+  {
+    "appId": {{user_id}},
+    "delay": 60,
+    "deviceSn": "{{deviceSerialNumber}}",
+    "id": "setDevRain",
+    "key": "rain",
+    "method": "set_property",
+    "rain_flag": true
+  }
+}

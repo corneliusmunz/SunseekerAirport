@@ -1,0 +1,20 @@
+meta {
+  name: Get Map data
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/wireless_map/wireless_device/get?deviceSn={{deviceSerialNumber}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  deviceSn: {{deviceSerialNumber}}
+}
+
+headers {
+  Authorization: Bearer {{access_token}}
+  Accept-Language: de
+}

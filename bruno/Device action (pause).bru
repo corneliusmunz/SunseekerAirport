@@ -1,0 +1,26 @@
+meta {
+  name: Device action (pause)
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/iot_mower/wireless/device/action
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept-Language: de
+  ~Authorization: Bearer {{access_token}}
+}
+
+body:json {
+  {
+    "method": "action",
+    "appId": {{user_id}},
+    "deviceSn": "{{deviceSerialNumber}}",
+    "cmd": "pause",
+    "id": "pauseWork"
+  }
+}

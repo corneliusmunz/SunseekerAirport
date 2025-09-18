@@ -1,0 +1,26 @@
+meta {
+  name: Device action (startFindCharger)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/iot_mower/wireless/device/action
+  body: json
+  auth: inherit
+}
+
+headers {
+  Accept-Language: de
+  ~Authorization: Bearer {{access_token}}
+}
+
+body:json {
+  {
+    "method": "action",
+    "appId": {{user_id}},
+    "deviceSn": "{{deviceSerialNumber}}",
+    "cmd": "start_find_charger",
+    "id": "startFindCharger"
+  }
+}
