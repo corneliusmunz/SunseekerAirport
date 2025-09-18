@@ -5,12 +5,15 @@
 #include <ArduinoJson.h>
 #include <UrlEncode.h>
 
-const char *ssid = "";
-const char *password = "";
+const char *WifiSsid = "";
+const char *WifiPassword = "";
 String baseUrl = "https://wirefree-specific.sk-robot.com/api/";
 String username = "";
 String password = "";
 String accessToken = "";
+String userId = "";
+String deviceSerialNumber = "";
+String deviceId = "";
 
 bool isAirfieldBlocked = false;
 
@@ -48,6 +51,27 @@ void GetToken() {
   }
 }
 
+void GetSettings() {
+  http.begin(baseUrl + "app_wireless_mower/device/info/" + deviceId);
+
+  // Specify content-type header
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept-Language", "de");
+  http.addHeader("Authorization", "Bearer " + accessToken);
+
+  // Send HTTP GET request
+  int httpResponseCode = http.GET();
+  if (httpResponseCode > 0) {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+    String response = http.getString();
+    Serial.println(response);
+  } else {
+    Serial.print("Error code: ");
+    Serial.println(httpResponseCode);
+  }
+}
+
 void setup() {
 
   M5.begin(true, false, true);
@@ -55,7 +79,7 @@ void setup() {
   
   M5.dis.fillpix(CRGB::Green);
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(WifiSsid, WifiPassword);
   Serial.println("Connecting");
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -79,6 +103,9 @@ void loop() {
     {
       M5.dis.fillpix(CRGB::Red);
       GetToken();
+      Serial.print("Access Token: ");
+      Serial.println(accessToken);
+      GetSettings();
     }
     else
     {
