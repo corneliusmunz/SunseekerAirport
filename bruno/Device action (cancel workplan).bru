@@ -1,7 +1,7 @@
 meta {
-  name: Device action (stop)
+  name: Device action (cancel workplan)
   type: http
-  seq: 3
+  seq: 6
 }
 
 post {
@@ -20,7 +20,7 @@ body:json {
     "method": "action",
     "appId": {{user_id}},
     "deviceSn": "{{deviceSerialNumber}}",
-    "cmd": "stop",
-    "id": "stopWork"
+    "cmd": "cancel_time_tactics",
+    "id": "cancelTimeTactics"
   }
 }
