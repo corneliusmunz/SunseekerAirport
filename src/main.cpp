@@ -55,6 +55,21 @@ void GetToken() {
   }
 }
 
+// property in json: data.workStatusCode
+// #New apptype modes:
+// #Unknown = 0,
+// #Idle = 1,
+// #Working = 2,
+// #Pause = 3,
+// #Error = 6,
+// #Return = 7,
+// #ReturnPause = 8,
+// #Charging = 9,
+// #ChargingFull = 10,
+// #Offline = 13,
+// #Locating = 15,
+// #Stopp = 18
+
 void GetSettings() {
   http.begin(baseUrl + "app_wireless_mower/device/info/" + deviceId);
 
@@ -147,177 +162,28 @@ void SetAction(String cmd, String id)
 }
 
 void SetActionStop(){
-  http.begin(baseUrl + "iot_mower/wireless/device/action");
-
-  // Specify content-type header
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Accept-Language", "de");
-  http.addHeader("Authorization", "Bearer " + accessToken);
-
-  // Data to send with HTTP POST
-  String httpRequestBody = 
-  "{\"method\" : \"action\",\"appId\" : " 
-  + userId 
-  + ",\"deviceSn\" : \"" 
-  + deviceSerialNumber 
-  + "\",\"cmd\" : \"stop\",\"id\" : \"stopWork\"}";
-  Serial.print("httpRequestBody: ");
-  Serial.println(httpRequestBody);
-
-  // Send HTTP POST request
-  int httpResponseCode = http.POST(httpRequestBody);
-  if (httpResponseCode > 0)
-  {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-    String response = http.getString();
-    Serial.println(response);
-  }
-  else
-  {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
-  }
+  SetAction("stop", "stopWork");
 }
 
 void SetActionStart(){
-  http.begin(baseUrl + "iot_mower/wireless/device/action");
-
-  // Specify content-type header
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Accept-Language", "de");
-  http.addHeader("Authorization", "Bearer " + accessToken);
-
-  // Data to send with HTTP POST
-  String httpRequestBody =
-      "{\"method\" : \"action\",\"appId\" : " 
-      + userId 
-      + ",\"deviceSn\" : \"" 
-      + deviceSerialNumber 
-      + "\",\"cmd\" : \"start\",\"id\" : \"startWork\"}";
-  Serial.print("httpRequestBody: ");
-  Serial.println(httpRequestBody);
-
-  // Send HTTP POST request
-  int httpResponseCode = http.POST(httpRequestBody);
-  if (httpResponseCode > 0)
-  {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-    String response = http.getString();
-    Serial.println(response);
-  }
-  else
-  {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
-  }
+  SetAction("start", "startWork");
 }
 
 void SetActionReturnToDock(){
-  http.begin(baseUrl + "iot_mower/wireless/device/action");
-
-  // Specify content-type header
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Accept-Language", "de");
-  http.addHeader("Authorization", "Bearer " + accessToken);
-
-  // Data to send with HTTP POST
-  String httpRequestBody =
-      "{\"method\" : \"action\",\"appId\" : " 
-      + userId 
-      + ",\"deviceSn\" : \"" 
-      + deviceSerialNumber 
-      + "\",\"cmd\" : \"start_find_charger\",\"id\" : \"startFindCharger\"}";
-  Serial.print("httpRequestBody: ");
-  Serial.println(httpRequestBody);
-
-  // Send HTTP POST request
-  int httpResponseCode = http.POST(httpRequestBody);
-  if (httpResponseCode > 0)
-  {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-    String response = http.getString();
-    Serial.println(response);
-  }
-  else
-  {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
-  }
+  SetAction("start_find_charger", "startFindCharger");
 }
 
 void SetActionPause(){
-  http.begin(baseUrl + "iot_mower/wireless/device/action");
-
-  // Specify content-type header
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Accept-Language", "de");
-  http.addHeader("Authorization", "Bearer " + accessToken);
-
-  // Data to send with HTTP POST
-  String httpRequestBody =
-      "{\"method\" : \"action\",\"appId\" : " 
-      + userId 
-      + ",\"deviceSn\" : \"" 
-      + deviceSerialNumber 
-      + "\",\"cmd\" : \"pause\",\"id\" : \"pauseWork\"}";
-  Serial.print("httpRequestBody: ");
-  Serial.println(httpRequestBody);
-
-  // Send HTTP POST request
-  int httpResponseCode = http.POST(httpRequestBody);
-  if (httpResponseCode > 0)
-  {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-    String response = http.getString();
-    Serial.println(response);
-  }
-  else
-  {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
-  }
+  SetAction("pause", "pauseWork");
 }
 
 void SetActionCancelWorkplan() {
-  http.begin(baseUrl + "iot_mower/wireless/device/action");
-
-  // Specify content-type header
-  http.addHeader("Content-Type", "application/json");
-  http.addHeader("Accept-Language", "de");
-  http.addHeader("Authorization", "Bearer " + accessToken);
-
-  // Data to send with HTTP POST
-  String httpRequestBody =
-      "{\"method\" : \"action\",\"appId\" : " 
-      + userId 
-      + ",\"deviceSn\" : \"" 
-      + deviceSerialNumber 
-      + "\",\"cmd\" : \"cancel_time_tactics\",\"id\" : \"cancelTimeTactics\"}";
-  Serial.print("httpRequestBody: ");
-  Serial.println(httpRequestBody);
-
-  // Send HTTP POST request
-  int httpResponseCode = http.POST(httpRequestBody);
-  if (httpResponseCode > 0)
-  {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-    String response = http.getString();
-    Serial.println(response);
-  }
-  else
-  {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
-  }
+  SetAction("cancel_time_tactics", "cancelTimeTactics");
 }
 
 void ClearAirport() {
   SetActionReturnToDock();
+  delay(1000);
   SetActionCancelWorkplan();
 }
 
@@ -326,7 +192,7 @@ void setup() {
   M5.begin(true, false, true);
   M5.dis.setBrightness(10);
   
-  M5.dis.fillpix(CRGB::Green);
+  M5.dis.fillpix(CRGB::Yellow);
 
   WiFi.begin(WifiSsid, WifiPassword);
   Serial.println("Connecting");
@@ -338,7 +204,7 @@ void setup() {
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
-
+  M5.dis.fillpix(CRGB::Green);
 }
 
 void loop() {
@@ -348,23 +214,21 @@ void loop() {
   {
     Serial.println("Button Pressed");
     isAirfieldBlocked = !isAirfieldBlocked;
+
+    GetToken();
+    Serial.print("Access Token: ");
+    Serial.println(accessToken);
+    Serial.print("Device ID: ");
+    GetAllDevices();
     if (isAirfieldBlocked)
     {
-      M5.dis.fillpix(CRGB::Red);
-      GetToken();
-      Serial.print("Access Token: ");
-      Serial.println(accessToken);
-      GetAllDevices();
-      Serial.print("Device ID: ");
-      Serial.println(deviceId);
-      Serial.print("Device Serial Number: ");
-      Serial.println(deviceSerialNumber);
-      GetSettings();
-      SetActionStart();
+      M5.dis.fillpix(CRGB::Green);
+      ClearAirport();
     }
     else
     {
-      M5.dis.fillpix(CRGB::Green);
+      M5.dis.fillpix(CRGB::Red);
+      SetActionStart();
     }
   }
   
