@@ -16,3 +16,22 @@ Status GREEN --> Pushing the Button will start the mower to mow the airfield
 
 The solution is build using the Arduino Framework and the Platform IO environment. It is deployed on an M5 Atom Matrix ESP32 controller. 
 
+## Bruno collection
+
+To test all needed API calls, a Bruno (https://usebruno.com) was developed. Just enter the following two properties in the environment settings of the bruno collection:
+
+username = Your login email 
+password = Your login password
+
+With this information, you can 
+
+* GET a token
+* GET a list of all devices
+* GET the specific settings of a device
+
+
+
+## Credits
+
+Many thanks [@Sdahl1234](https://github.com/Sdahl1234) for publishing https://github.com/Sdahl1234/Sunseeker-lawn-mower I could gain valuable insights about the API, the authorization and the data structures of the Sunseeker robot mowers. 
+
