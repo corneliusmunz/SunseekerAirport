@@ -1,4 +1,4 @@
-# SunseekerAirport
+# Sunseeker mower remote control
 
 This repository is an remote control Tool for controlling an Sunseeker robotic mower on an model plane airfield. The task is to prevent the mower from working when the rc pilots will use the airfield. A status LED is visualizing the current airfield status. We want to hide all the configruation issues of the Sunseeker app and have only a simple user interface.
 
