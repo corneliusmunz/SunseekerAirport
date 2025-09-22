@@ -6,6 +6,10 @@ This repository is an Tool for controlling an Sunseeker robotic mower on an mode
 * **BLUE**: Mower is in transition
 * **GREEN**: Airfield is free and can be used by the rc pilots
 
+![Status RED](docs/images/state_red.jpeg)
+![Status GREEN](docs/images/state_green.jpeg)
+![Button PRESS](docs/images/button_press.mov)
+
 To achieve long mowing times, the airfield can be manually freed by the pilots by pushing a button to send the mower back to the garage. If the airfield is no loger used by the pilots, the mower could be started again by pushing the button.
 
 **Button commands**
