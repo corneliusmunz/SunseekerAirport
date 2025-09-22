@@ -16,6 +16,9 @@ String deviceSerialNumber = "";
 String deviceId = "";
 
 bool isAirfieldBlocked = false;
+bool isInTransition = false;
+int statusIntervall = 120000;
+int lastCall;
 
 HTTPClient http;
 
@@ -84,7 +87,23 @@ void GetSettings() {
     Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
     String response = http.getString();
+    JsonDocument doc;
+    deserializeJson(doc, response);
     Serial.println(response);
+    int workStatusCode = doc["data"]["workStatusCode"];
+    if (workStatusCode == 9) {
+      isInTransition = false;
+      isAirfieldBlocked = false;
+    } else if (workStatusCode == 10) {
+      isInTransition = false;
+      isAirfieldBlocked = false;
+    }
+    else if (workStatusCode == 2) {
+      isInTransition = false;
+      isAirfieldBlocked = true;
+    } else {
+      isInTransition = true;
+    }
   } else {
     Serial.print("Error code: ");
     Serial.println(httpResponseCode);
@@ -187,12 +206,40 @@ void ClearAirport() {
   SetActionCancelWorkplan();
 }
 
+void SetColorOutput() {
+  if (isInTransition) {
+    M5.dis.fillpix(CRGB::Blue);
+    return;
+  }
+  
+  if (isAirfieldBlocked) {
+    M5.dis.fillpix(CRGB::Red);
+  } else {
+    M5.dis.fillpix(CRGB::Green);
+  }
+}
+
+void GetStatus() {
+  GetToken();
+  GetAllDevices();
+  GetSettings();
+  Serial.print("isAirfieldBlocked: ");
+  Serial.print(isAirfieldBlocked);
+  Serial.print(" isInTransition: ");
+  Serial.println(isInTransition);
+}
+
+void GetStatusAndUpdateColorOutput(){
+  GetStatus();
+  SetColorOutput();
+}
+
 void setup() {
 
   M5.begin(true, false, true);
   M5.dis.setBrightness(10);
   
-  M5.dis.fillpix(CRGB::Yellow);
+  M5.dis.clear();
 
   WiFi.begin(WifiSsid, WifiPassword);
   Serial.println("Connecting");
@@ -204,30 +251,33 @@ void setup() {
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
-  M5.dis.fillpix(CRGB::Green);
+  GetStatus();
+  SetColorOutput();
+
+  lastCall = millis();
 }
+
 
 void loop() {
   M5.update();
+
+  if (millis() > (lastCall+statusIntervall)) {
+    lastCall = millis();
+    GetStatusAndUpdateColorOutput();
+  }
  
   if (M5.Btn.wasPressed())
   {
     Serial.println("Button Pressed");
-    isAirfieldBlocked = !isAirfieldBlocked;
+    isInTransition = true;
+    SetColorOutput();
 
-    GetToken();
-    Serial.print("Access Token: ");
-    Serial.println(accessToken);
-    Serial.print("Device ID: ");
-    GetAllDevices();
     if (isAirfieldBlocked)
     {
-      M5.dis.fillpix(CRGB::Green);
       ClearAirport();
     }
     else
     {
-      M5.dis.fillpix(CRGB::Red);
       SetActionStart();
     }
   }
