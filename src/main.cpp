@@ -4,21 +4,24 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <UrlEncode.h>
+#include <TaskScheduler.h>
 
 const char *WifiSsid = "";
 const char *WifiPassword = "";
-String baseUrl = "https://wirefree-specific.sk-robot.com/api/";
 String username = "";
 String password = "";
+String baseUrl = "https://wirefree-specific.sk-robot.com/api/";
 String accessToken = "";
 String userId = "";
 String deviceSerialNumber = "";
 String deviceId = "";
 
+void mainTaskCallback();
+Task t1(10000, TASK_FOREVER, &mainTaskCallback);
+Scheduler runner;
+
 bool isAirfieldBlocked = false;
 bool isInTransition = false;
-int statusIntervall = 120000;
-int lastCall;
 
 HTTPClient http;
 
@@ -254,18 +257,15 @@ void setup() {
   GetStatus();
   SetColorOutput();
 
-  lastCall = millis();
+  runner.init();
+  Serial.println("Initialized scheduler");
+  runner.addTask(t1);
+  Serial.println("added t1");
+  t1.enable();
+  Serial.println("Enabled t1");
 }
 
-
-void loop() {
-  M5.update();
-
-  if (millis() > (lastCall+statusIntervall)) {
-    lastCall = millis();
-    GetStatusAndUpdateColorOutput();
-  }
- 
+void checkButton(){
   if (M5.Btn.wasPressed())
   {
     Serial.println("Button Pressed");
@@ -281,6 +281,15 @@ void loop() {
       SetActionStart();
     }
   }
-  
-  
+}
+
+void mainTaskCallback()
+{
+  GetStatusAndUpdateColorOutput();
+}
+
+void loop() {
+  M5.update();
+  runner.execute();
+  checkButton();
 }
